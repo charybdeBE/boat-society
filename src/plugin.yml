@@ -6,7 +6,7 @@ softdepend: [Vault]
 commands:
       bank:
                description: Gestion of bank accounts
-               usage: bank [pay|withdraw|list] ACCOUNT
+               usage:  Utilisation  bank [pay|withdraw|list] COMPTE MONTANT
 permissions:
     bcc.create:
         description: Allow user to create accounts

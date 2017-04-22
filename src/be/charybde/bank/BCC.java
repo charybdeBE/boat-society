@@ -70,6 +70,9 @@ public class BCC extends JavaPlugin {
         if(!commandName.equalsIgnoreCase("bank"))
             return true;
 
+        if(args.length == 0)
+            return false;
+
         return commandUtil.handleCommand(sender, cmd, commandLabel, args, commandDispatcher);
     }
 
