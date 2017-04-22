@@ -71,7 +71,7 @@ public class BCC extends JavaPlugin {
             return true;
 
         if(args.length == 0)
-            return false;
+            args = new String[]{"list"};
 
         return commandUtil.handleCommand(sender, cmd, commandLabel, args, commandDispatcher);
     }
