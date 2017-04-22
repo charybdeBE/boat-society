@@ -1,0 +1,17 @@
+create: Le compte !account a ete cree.
+pay: \!money Tr a ete transfere sur le compte !account.
+notpay: Pas assez d argent dans votre poche.
+withdraw: Vous avez retire !money Tr du compte !account.
+notwithdraw: Le compte !account ne contient pas assez d argent.
+balance: \!account !money Tr
+notallowed: Vous n etes pas autorise a utiliser ce compte.
+notallowed2: Vous n etes pas autorise a executer cette commande.
+list: Liste des comptes
+owner: \!person a ete ajoute au compte !account
+ownerless:  \!person a ete retire du compte !account
+notifOn: Notifications activee pour le compte !account
+notifOff: Notifications desactive pour le compte !account
+notiftextIn: \!money Tr ont ete verse sur le compte !account par !person
+notiftextOut: \!money Tr ont ete retire du compte !account par !person
+alreadyexist: Erreur le nom que vous avez choisis existe deja
+notfound: Ce compte n existe pas
