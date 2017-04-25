@@ -11,7 +11,7 @@ owner: \!person a ete ajoute au compte !account
 ownerless:  \!person a ete retire du compte !account
 notifOn: Notifications activee pour le compte !account
 notifOff: Notifications desactive pour le compte !account
-notiftextIn: \!money Tr ont ete verse sur le compte !account par !person
-notiftextOut: \!money Tr ont ete retire du compte !account par !person
+notiftextIn: \!money Tr ont ete verse sur le compte !account par !person !motif
+notiftextOut: \!money Tr ont ete retire du compte !account par !person !motif
 alreadyexist: Erreur le nom que vous avez choisis existe deja
 notfound: Ce compte n existe pas

@@ -54,7 +54,11 @@ public class Account {
         return  true;
     }
 
-    public boolean pay(double amount, String player){
+    public boolean pay(double amount, String player) {
+        return this.pay(amount, player, "");
+    }
+
+    public boolean pay(double amount, String player, String communication){
         if(amount < 0.0D || Vault.getEconomy().getBalance(player) < amount)
             return false;
         Vault.getEconomy().depositPlayer(this.name, amount);
@@ -62,8 +66,12 @@ public class Account {
         if(notif){
             Map<String, String> message = new HashMap<>();
             message.put("account", this.surname);
-            message.put("money", Double.toString(amount));
+            message.put("money", Utils.formatDouble(amount));
             message.put("person", player);
+            if(!communication.equals("")){
+                communication = "(" + communication + ")";
+            }
+            message.put("motif", communication);
             sendNotification(Utils.formatMessage("notiftextIn", message));
         }
         Utils.logTransaction(player, this.surname, "pay", Double.toString(amount));
@@ -71,15 +79,23 @@ public class Account {
     }
 
     //Nb the check for player auth should have been done before
-    public boolean withdraw(double amount, String player ){
+    public boolean withdraw(double amount, String player) {
+        return this.withdraw(amount, player, "");
+    }
+
+    public boolean withdraw(double amount, String player , String communication){
         if(amount > 0.0D && this.getBalance() >= amount){
             Vault.getEconomy().depositPlayer(player, amount);
             Vault.getEconomy().withdrawPlayer(this.name, amount);
             if(notif){
                 Map<String, String> message = new HashMap<>();
                 message.put("account", this.surname);
-                message.put("money", Double.toString(amount));
+                message.put("money", Utils.formatDouble(amount));
                 message.put("person", player);
+                if(!communication.equals("")){
+                    communication = "(" + communication + ")";
+                }
+                message.put("motif", communication);
                 sendNotification(Utils.formatMessage("notiftextOut", message));
             }
             Utils.logTransaction(player, this.surname, "withdraw", Double.toString(amount));

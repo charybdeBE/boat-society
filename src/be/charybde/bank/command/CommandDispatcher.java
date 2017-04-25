@@ -22,6 +22,8 @@ public class CommandDispatcher {
 
     public boolean handle(String command, String[] args, Player player) {
         String lower = command.toLowerCase();
+        if(!handlers.containsKey(lower))
+            return false;
         return this.handlers.containsKey(lower)?((ICommandHandler)this.handlers.get(lower)).handle(lower, args, player):((ICommandHandler)this.handlers.get("")).handle("", args, player);
     }
 }

@@ -43,7 +43,7 @@ public class ListCommand implements ICommandHandler {
             if(all || player == null || it.isAllowed(player.getName())){
                 Map<String, String> message = new HashMap<>();
                 message.put("account", it.getName());
-                message.put("money", Double.toString(it.getBalance()));
+                message.put("money", Utils.formatDouble(it.getBalance()));
                 commandUtil.sendToPlayerOrConsole(Utils.formatMessage("balance", message), player);
 
             }

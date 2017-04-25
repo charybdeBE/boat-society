@@ -36,7 +36,15 @@ public class WithdrawCommand implements ICommandHandler {
             return true;
         }
 
-        if(  account.withdraw(Double.parseDouble(args[1]), player.getName())){
+        boolean result = false;
+        if(args.length > 2){
+            String message = Utils.formatArray(args, 2);
+            result = account.withdraw(Double.parseDouble(args[1]), player.getName(), message);
+        }
+        else {
+            result = account.withdraw(Double.parseDouble(args[1]), player.getName());
+        }
+        if( result ){
             Map<String, String> message = new HashMap<>();
             message.put("money", args[1]);
             message.put("account", args[0]);
