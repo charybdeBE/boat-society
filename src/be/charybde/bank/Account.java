@@ -74,7 +74,7 @@ public class Account {
             message.put("motif", communication);
             sendNotification(Utils.formatMessage("notiftextIn", message));
         }
-        Utils.logTransaction(player, this.surname, "pay", Double.toString(amount));
+        Utils.logTransaction(player, this.surname, "pay", Double.toString(amount), communication);
         return true;
     }
 
@@ -98,7 +98,7 @@ public class Account {
                 message.put("motif", communication);
                 sendNotification(Utils.formatMessage("notiftextOut", message));
             }
-            Utils.logTransaction(player, this.surname, "withdraw", Double.toString(amount));
+            Utils.logTransaction(player, this.surname, "withdraw", Double.toString(amount), communication);
             return true;
         }
 

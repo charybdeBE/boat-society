@@ -32,8 +32,9 @@ public class Utils {
         return formatMessage(path, null);
     }
 
-    public static void logTransaction(String user, String account, String Operation,String amount) {
-        String message = "User: " + user + ", Account: " + account + ", Operation: " + Operation + ", Amount : " + amount + "";
+    public static void logTransaction(String user, String account, String Operation,String amount, String communication) {
+        String com = communication.equals("")? "None" : communication;
+        String message = "User: " + user + ", Account: " + account + ", Operation: " + Operation + ", Amount : " + amount + ", Communication : " + com;
         transactionlogger.log(Level.INFO, message);
     }
 

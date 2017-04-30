@@ -85,9 +85,9 @@ public class BCC extends JavaPlugin {
         commandDispatcher.registerHandler("addowner", AddOwnerCommand.getInstance());
         commandDispatcher.registerHandler("removeowner", RemoveOwnerCommand.getInstance());
 
-        commandDispatcher.registerHandler("ajoute", PayCommand.getInstance());
+        commandDispatcher.registerHandler("depot", PayCommand.getInstance());
         commandDispatcher.registerHandler("liste", ListCommand.getInstance());
-        commandDispatcher.registerHandler("retire", WithdrawCommand.getInstance());
+        commandDispatcher.registerHandler("retrait", WithdrawCommand.getInstance());
         commandDispatcher.registerHandler("plusutilisateur", AddOwnerCommand.getInstance());
         commandDispatcher.registerHandler("moinsutilisateur", RemoveOwnerCommand.getInstance());
     }
