@@ -139,7 +139,7 @@ public class Account {
         return notif;
     }
 
-    public void setColor(String c){
+    public boolean setColor(String c){
         if(c.startsWith("&")){
             String newS = ChatColor.translateAlternateColorCodes('&', c);
             this.color = newS;
@@ -149,9 +149,12 @@ public class Account {
                 ChatColor cc = ChatColor.valueOf(c.toUpperCase());
                 System.out.println(cc);
                 this.color = cc.toString();
-            }catch (IllegalArgumentException e){}
+            }catch (IllegalArgumentException e){
+                return false;
+            }
         }
         this.save();
+        return true;
     }
 
     private void sendNotification(String s){

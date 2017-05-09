@@ -35,11 +35,17 @@ public class SetColorCommand implements ICommandHandler {
             return true;
         }
 
-        account.setColor(args[1]);
 
-        Map<String, String> message = new HashMap<>();
-        message.put("account", account.getDisplayName());
-        commandUtil.sendToPlayerOrConsole(Utils.formatMessage("color", message), player);
+        if(account.setColor(args[1])){
+            Map<String, String> message = new HashMap<>();
+            message.put("account", account.getDisplayName());
+            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("color", message), player);
+        }
+        else {
+            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("colornotfound"), player);
+        }
+
+
         return true;
     }
 }
