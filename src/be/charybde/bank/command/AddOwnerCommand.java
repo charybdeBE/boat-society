@@ -41,7 +41,7 @@ public class AddOwnerCommand implements ICommandHandler {
         for(int i = 1; i < args.length; ++i) {
             account.addOwner(args[i].toLowerCase());
             Map<String, String> message = new HashMap<>();
-            message.put("account", args[0]);
+            message.put("account", account.getDisplayName());
             message.put("person", args[i]);
             commandUtil.sendToPlayerOrConsole(Utils.formatMessage("owner", message), player);
         }

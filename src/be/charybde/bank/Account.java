@@ -2,6 +2,7 @@ package be.charybde.bank;
 
 import be.charybde.bank.command.commandUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Account {
     private String surname;
     private ArrayList<String> authorizedPlayer;
     private Boolean notif;
+    private String color;
 
     public Account(String n, ArrayList<String> auth, boolean notif, boolean save){
         name = "_bank_"+n;
@@ -43,6 +45,7 @@ public class Account {
         BCC plugin = BCC.getInstance();
         ArrayList<String> auth = (ArrayList<String>) plugin.getStorage().get(name+".owners", null);
         Boolean notif = (Boolean) plugin.getStorage().get(name+".notifications", null);
+        String color = (String) plugin.getStorage().get(name+".color", null);
         if(auth == null || notif == null)
             return null;
         return new Account(name, auth, notif, false);
@@ -65,11 +68,11 @@ public class Account {
         Vault.getEconomy().withdrawPlayer(player, amount);
         if(notif){
             Map<String, String> message = new HashMap<>();
-            message.put("account", this.surname);
+            message.put("account", this.getDisplayName());
             message.put("money", Utils.formatDouble(amount));
             message.put("person", player);
             if(!communication.equals("")){
-                communication = "(" + communication + ")";
+                communication = ChatColor.GREEN + "(" + ChatColor.WHITE + communication + ChatColor.GREEN + ")";
             }
             message.put("motif", communication);
             sendNotification(Utils.formatMessage("notiftextIn", message));
@@ -89,11 +92,11 @@ public class Account {
             Vault.getEconomy().withdrawPlayer(this.name, amount);
             if(notif){
                 Map<String, String> message = new HashMap<>();
-                message.put("account", this.surname);
+                message.put("account", this.getDisplayName());
                 message.put("money", Utils.formatDouble(amount));
                 message.put("person", player);
                 if(!communication.equals("")){
-                    communication = "(" + communication + ")";
+                    communication = ChatColor.GREEN + "(" + ChatColor.WHITE + communication + ChatColor.GREEN + ")";
                 }
                 message.put("motif", communication);
                 sendNotification(Utils.formatMessage("notiftextOut", message));
@@ -119,6 +122,7 @@ public class Account {
         BCC plugin = BCC.getInstance();
         plugin.getStorage().set(this.surname+".owners", this.authorizedPlayer);
         plugin.getStorage().set(this.surname+".notifications", this.notif);
+        plugin.getStorage().set(this.surname+".color", this.color);
         plugin.saveStorage();
     }
 
@@ -131,9 +135,23 @@ public class Account {
         this.save();
     }
 
-
     public Boolean getNotif() {
         return notif;
+    }
+
+    public void setColor(String c){
+        if(c.startsWith("&")){
+            String newS = ChatColor.translateAlternateColorCodes('&', c);
+            this.color = newS;
+        }
+        else{
+            try {
+                ChatColor cc = ChatColor.valueOf(c.toUpperCase());
+                System.out.println(cc);
+                this.color = cc.toString();
+            }catch (IllegalArgumentException e){}
+        }
+        this.save();
     }
 
     private void sendNotification(String s){
@@ -146,6 +164,15 @@ public class Account {
             mail_args[1] = own;
             mail.getExecutor().onCommand(Bukkit.getConsoleSender(), mail, "mail", mail_args);
         }
+    }
+
+    public String getDisplayName(){
+        if(this.color != null){
+            return this.color + "" + this.surname + ChatColor.GREEN;
+
+        }
+        else
+            return this.surname;
     }
 
     public void delOwner(String s) {

@@ -38,7 +38,7 @@ public class NotifSwitchCommand implements ICommandHandler{
         }
 
         Map<String, String> message = new HashMap<>();
-        message.put("account", args[0]);
+        message.put("account", account.getDisplayName());
         if(args.length == 1){
             account.setNotif(!account.getNotif());
 

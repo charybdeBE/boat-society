@@ -44,7 +44,7 @@ public class PayCommand implements ICommandHandler {
         if( result ){
             Map<String, String> message = new HashMap<>();
             message.put("money", args[1]);
-            message.put("account", args[0]);
+            message.put("account", account.getDisplayName());
             commandUtil.sendToPlayerOrConsole(Utils.formatMessage("pay", message), player);
             return true;
         }

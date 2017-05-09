@@ -84,12 +84,17 @@ public class BCC extends JavaPlugin {
         commandDispatcher.registerHandler("notification", NotifSwitchCommand.getInstance());
         commandDispatcher.registerHandler("addowner", AddOwnerCommand.getInstance());
         commandDispatcher.registerHandler("removeowner", RemoveOwnerCommand.getInstance());
+        commandDispatcher.registerHandler("color", SetColorCommand.getInstance());
 
+
+        //French command
         commandDispatcher.registerHandler("depot", PayCommand.getInstance());
         commandDispatcher.registerHandler("liste", ListCommand.getInstance());
         commandDispatcher.registerHandler("retrait", WithdrawCommand.getInstance());
         commandDispatcher.registerHandler("plusutilisateur", AddOwnerCommand.getInstance());
         commandDispatcher.registerHandler("moinsutilisateur", RemoveOwnerCommand.getInstance());
+        commandDispatcher.registerHandler("couleur", SetColorCommand.getInstance());
+
     }
 
 
