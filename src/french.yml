@@ -15,5 +15,5 @@ notiftextIn: \!money Tr ont ete verse sur le compte !account par !person !motif
 notiftextOut: \!money Tr ont ete retire du compte !account par !person !motif
 alreadyexist: Erreur le nom que vous avez choisis existe deja
 notfound: Ce compte n existe pas.
-color: Couleur modifiee pour le compte !account7
+color: Couleur modifiee pour le compte !account
 colornotfound: Cette couleur n existe pas.

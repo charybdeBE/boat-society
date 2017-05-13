@@ -100,7 +100,7 @@ public class BCC extends JavaPlugin {
 
     public static void log(String message, Level level) {
         if(!message.isEmpty())
-            logger.log(level,("[Banque Celeste] " + message));
+            logger.log(level,("[BCC] " + message));
     }
 
     private void createDir() {

@@ -41,6 +41,11 @@ public class Account {
         this(n, new ArrayList<String>(), false, true);
     }
 
+    public Account(String name, ArrayList<String> auth, Boolean notif, String color, boolean b) {
+        this(name, auth, notif, b);
+        this.color = color;
+    }
+
     public static Account fetch(String name){
         BCC plugin = BCC.getInstance();
         ArrayList<String> auth = (ArrayList<String>) plugin.getStorage().get(name+".owners", null);
@@ -48,7 +53,7 @@ public class Account {
         String color = (String) plugin.getStorage().get(name+".color", null);
         if(auth == null || notif == null)
             return null;
-        return new Account(name, auth, notif, false);
+        return new Account(name, auth, notif, color, false);
     }
 
     public boolean addOwner(String auth){
@@ -139,16 +144,17 @@ public class Account {
         return notif;
     }
 
+
     public boolean setColor(String c){
         if(c.startsWith("&")){
             String newS = ChatColor.translateAlternateColorCodes('&', c);
-            this.color = newS;
+            this.color = newS.substring(1);
         }
         else{
             try {
                 ChatColor cc = ChatColor.valueOf(c.toUpperCase());
                 System.out.println(cc);
-                this.color = cc.toString();
+                this.color = String.valueOf(cc.getChar());
             }catch (IllegalArgumentException e){
                 return false;
             }
@@ -171,8 +177,7 @@ public class Account {
 
     public String getDisplayName(){
         if(this.color != null){
-            return this.color + "" + this.surname + ChatColor.GREEN;
-
+            return ChatColor.getByChar(this.color) + "" + this.surname + ChatColor.GREEN;
         }
         else
             return this.surname;
