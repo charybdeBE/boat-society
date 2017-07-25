@@ -30,7 +30,7 @@ public class SetColorCommand implements ICommandHandler {
             commandUtil.sendToPlayerOrConsole(Utils.formatMessage("notfound"), player);
             return true;
         }
-        if(player != null && !Vault.getPermission().has(player, "bcc.create") && !account.isAllowed(player.getName())){
+        if(player != null && !Vault.getPermission().has(player, "bcc.admin") && !account.isAllowed(player.getName())){
             commandUtil.sendToPlayerOrConsole(Utils.formatMessage("notallowed2"), player);
             return true;
         }

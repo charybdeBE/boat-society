@@ -28,7 +28,6 @@ public class ListCommand implements ICommandHandler {
     public boolean handle(String command, String[] args, Player player) {
         boolean all = false;
         if(player != null && args.length == 1 && args[0].equals("all")){
-            System.out.println("mmmm");
             if(Vault.getPermission().has(player, "bcc.list"))
                 all = true;
             else{

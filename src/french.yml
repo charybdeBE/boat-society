@@ -17,3 +17,4 @@ alreadyexist: Erreur le nom que vous avez choisis existe deja
 notfound: Ce compte n existe pas.
 color: Couleur modifiee pour le compte !account
 colornotfound: Cette couleur n existe pas.
+delete: Le compte !account a ete supprime, il contenait !money Tr

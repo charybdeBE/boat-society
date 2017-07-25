@@ -85,6 +85,7 @@ public class BCC extends JavaPlugin {
         commandDispatcher.registerHandler("addowner", AddOwnerCommand.getInstance());
         commandDispatcher.registerHandler("removeowner", RemoveOwnerCommand.getInstance());
         commandDispatcher.registerHandler("color", SetColorCommand.getInstance());
+        commandDispatcher.registerHandler("remove", DeleteAccountCommand.getInstance());
 
 
         //French command

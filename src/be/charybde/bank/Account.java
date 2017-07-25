@@ -29,6 +29,7 @@ public class Account {
             Vault.getEconomy().createPlayerAccount(name);
             double xx = Vault.getEconomy().getBalance(name);
             Vault.getEconomy().withdrawPlayer(name, xx);
+
         }
 
     }

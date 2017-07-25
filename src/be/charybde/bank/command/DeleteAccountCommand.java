@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by laurent on 19.04.17.
+ * Created by laurent on 39.06.17.
  */
-public class CreateCommand implements ICommandHandler{
-    private static ICommandHandler instance = new CreateCommand();
+public class DeleteAccountCommand implements ICommandHandler{
+    private static ICommandHandler instance = new DeleteAccountCommand();
 
-    private CreateCommand() {
+    private DeleteAccountCommand() {
 
     }
 
@@ -29,7 +29,7 @@ public class CreateCommand implements ICommandHandler{
         if(args.length < 1)
             return false;
 
-        if(player != null && !Vault.getPermission().has(player, "bcc.create")  && !Vault.getPermission().has(player, "bcc.admin")){
+        if(player != null && !Vault.getPermission().has(player, "bcc.admin")){
             commandUtil.sendToPlayerOrConsole(Utils.formatMessage("notallowed2"), player);
             return true;
         }
@@ -38,24 +38,21 @@ public class CreateCommand implements ICommandHandler{
         for(Map.Entry<String, Object> e : g.entrySet()){
             Account it = Account.fetch(e.getKey());
             if(it.getName().equals(args[0])){
-                commandUtil.sendToPlayerOrConsole(Utils.formatMessage("alreadyexist"), player);
+                BCC plugin = BCC.getInstance();
+                plugin.getStorage().set(args[0], null);
+                plugin.saveStorage();
+                Map<String, String> message = new HashMap<>();
+                message.put("account", args[0]);
+                message.put("money", String.valueOf(it.getBalance()));
+                commandUtil.sendToPlayerOrConsole(Utils.formatMessage("delete", message), player);
+                Utils.logTransaction(player.getName(), args[0], "delete", Double.toString(it.getBalance()), "");
                 return true;
             }
         }
 
-        if (args.length == 1){
-            new Account(args[0]);
-        }
-        else {
-            ArrayList<String> owners = new ArrayList<>();
-            for(int i = 1; i < args.length; ++i)
-                owners.add(args[i].toLowerCase());
-            new Account(args[0], owners, false);
-        }
         Map<String, String> message = new HashMap<>();
         message.put("account", args[0]);
-        commandUtil.sendToPlayerOrConsole(Utils.formatMessage("create", message), player);
-        Utils.logTransaction(player.getName(), args[0], "create", "", "");
+        commandUtil.sendToPlayerOrConsole(Utils.formatMessage("notfound", message), player);
 
         return true;
     }

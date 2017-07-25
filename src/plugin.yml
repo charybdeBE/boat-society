@@ -14,3 +14,6 @@ permissions:
     bcc.list:
         description: Allow user to see all accounts
         default: false
+    bcc.admin:
+        description: Allow user to do everything on all account
+        default: false
