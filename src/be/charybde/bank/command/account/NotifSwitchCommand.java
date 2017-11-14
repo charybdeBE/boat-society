@@ -1,8 +1,10 @@
-package be.charybde.bank.command;
+package be.charybde.bank.command.account;
 
-import be.charybde.bank.Account;
+import be.charybde.bank.entities.Account;
 import be.charybde.bank.Utils;
 import be.charybde.bank.Vault;
+import be.charybde.bank.command.ICommandHandler;
+import be.charybde.bank.command.commandUtil;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import java.util.Map;
 /**
  * Created by laurent on 21.04.17.
  */
-public class NotifSwitchCommand implements ICommandHandler{
+public class NotifSwitchCommand implements ICommandHandler {
     private static ICommandHandler instance = new NotifSwitchCommand();
 
     private NotifSwitchCommand() {

@@ -18,3 +18,7 @@ notfound: Ce compte n existe pas.
 color: Couleur modifiee pour le compte !account
 colornotfound: Cette couleur n existe pas.
 delete: Le compte !account a ete supprime, il contenait !money Tr
+bankinfo: La banque !name possede une encaisse de !money Tr ses affiliés sont !client
+transfert: Compte !account transfere de !bank1 a !bank2
+bankwithdraw: \!money a ete retire de l encaisse de !bank
+bankpay: \!money a ete ajoute a l encaisse de !bank

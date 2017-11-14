@@ -5,6 +5,7 @@ package be.charybde.bank.command;
 // (powered by Fernflower decompiler)
 //
 
+import be.charybde.bank.command.ICommandHandler;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;

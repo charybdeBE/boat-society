@@ -1,6 +1,9 @@
 package be.charybde.bank;
 
 import be.charybde.bank.command.*;
+import be.charybde.bank.command.account.*;
+import be.charybde.bank.command.bank.*;
+import be.charybde.bank.entities.Entities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -13,14 +16,18 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.*;
 
 public class BCC extends JavaPlugin {
     private static final Logger logger = Logger.getLogger("Minecraft");
     private static final Logger transactionlogger = Logger.getLogger("Transactions");
     private static CommandDispatcher commandDispatcher = new CommandDispatcher();
-    private File storageF, languageF;
-    private FileConfiguration storage, language;
+    private File languageF;
+    private FileConfiguration language;
+    private Map<Entities, FileConfiguration> storage;
+    private Map<Entities, File> storageF;
     public static BCC plugin = null;
 
     public static BCC getInstance(){
@@ -35,7 +42,10 @@ public class BCC extends JavaPlugin {
         v.setupEconomy();
         v.setupPermissions();
         setupCommands();
-        createStorage();
+        this.storage = new HashMap<>();
+        this.storageF = new HashMap<>();
+        createStorage(Entities.ACCOUNT, "account.yml");
+        createStorage(Entities.BANK, "bank.yml");
         setupLang();
 
         try {
@@ -96,6 +106,14 @@ public class BCC extends JavaPlugin {
         commandDispatcher.registerHandler("moinsutilisateur", RemoveOwnerCommand.getInstance());
         commandDispatcher.registerHandler("couleur", SetColorCommand.getInstance());
 
+
+        //Commercial Bank command
+        commandDispatcher.registerHandler("ccreate", CreateBankCommand.getInstance());
+        commandDispatcher.registerHandler("cinfo", BankInfoCommand.getInstance());
+        commandDispatcher.registerHandler("ctransfert", TransferAccountCommand.getInstance());
+        commandDispatcher.registerHandler("cretrait", WithDrawFromBankCommand.getInstance());
+        commandDispatcher.registerHandler("cdepot", PayToBankCommand.getInstance());
+
     }
 
 
@@ -113,25 +131,25 @@ public class BCC extends JavaPlugin {
     }
 
 
-    private void createStorage() {
+    private void createStorage(Entities ent, String filename) {
         try {
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
-            storageF = new File(getDataFolder(), "account.yml");
-            if (!storageF.exists()) {
-                log("account.yml not found, creating!", Level.INFO);
-                storageF.getParentFile().mkdirs();
-                saveResource("account.yml", false);
+            storageF.put(ent, new File(getDataFolder(), filename));
+            if (!storageF.get(ent).exists()) {
+                log(filename +" not found, creating!", Level.INFO);
+                storageF.get(ent).getParentFile().mkdirs();
+                saveResource(filename, false);
             } else {
-                log("account.yml  found, loading!", Level.INFO);
+                log(filename +"  found, loading!", Level.INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        storage = new YamlConfiguration();
+        storage.put(ent,  new YamlConfiguration());
         try {
-            storage.load(storageF);
+            storage.get(ent).load(storageF.get(ent));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidConfigurationException e) {
@@ -139,8 +157,8 @@ public class BCC extends JavaPlugin {
         }
     }
 
-    public FileConfiguration getStorage(){
-        return storage;
+    public FileConfiguration getStorage(Entities e){
+        return storage.get(e);
     }
 
     public FileConfiguration getLang(){
@@ -171,9 +189,9 @@ public class BCC extends JavaPlugin {
         }
     }
 
-    public void saveStorage() {
+    public void saveStorage(Entities ent) {
         try {
-            storage.save(storageF);
+            storage.get(ent).save(storageF.get(ent));
         } catch (IOException e) {
             e.printStackTrace();
         }

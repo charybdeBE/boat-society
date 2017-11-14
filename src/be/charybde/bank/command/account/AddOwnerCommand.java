@@ -1,8 +1,10 @@
-package be.charybde.bank.command;
+package be.charybde.bank.command.account;
 
-import be.charybde.bank.Account;
+import be.charybde.bank.entities.Account;
 import be.charybde.bank.Utils;
 import be.charybde.bank.Vault;
+import be.charybde.bank.command.ICommandHandler;
+import be.charybde.bank.command.commandUtil;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -12,10 +14,10 @@ import java.util.Map;
 /**
  * Created by laurent on 19.04.17.
  */
-public class RemoveOwnerCommand implements ICommandHandler {
-    private static ICommandHandler instance = new RemoveOwnerCommand();
+public class AddOwnerCommand implements ICommandHandler {
+    private static ICommandHandler instance = new AddOwnerCommand();
 
-    private RemoveOwnerCommand() {
+    private AddOwnerCommand() {
 
     }
 
@@ -39,11 +41,11 @@ public class RemoveOwnerCommand implements ICommandHandler {
         }
 
         for(int i = 1; i < args.length; ++i) {
-            account.delOwner(args[i].toLowerCase());
+            account.addOwner(args[i].toLowerCase());
             Map<String, String> message = new HashMap<>();
             message.put("account", account.getDisplayName());
             message.put("person", args[i]);
-            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("ownerless", message), player);
+            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("owner", message), player);
         }
 
         return true;

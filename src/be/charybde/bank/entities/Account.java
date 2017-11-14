@@ -1,6 +1,8 @@
-package be.charybde.bank;
+package be.charybde.bank.entities;
 
-import be.charybde.bank.command.commandUtil;
+import be.charybde.bank.BCC;
+import be.charybde.bank.Utils;
+import be.charybde.bank.Vault;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -12,26 +14,19 @@ import java.util.Map;
 /**
  * Created by laurent on 19.04.17.
  */
-public class Account {
+public class Account implements Entity {
     private String name;
     private String surname;
+    private String bankName;
     private ArrayList<String> authorizedPlayer;
     private Boolean notif;
     private String color;
 
+
+
+//Kept for legacy section
     public Account(String n, ArrayList<String> auth, boolean notif, boolean save){
-        name = "_bank_"+n;
-        surname = n;
-        authorizedPlayer = auth;
-        this.notif = notif;
-        if(save) {
-            this.save();
-            Vault.getEconomy().createPlayerAccount(name);
-            double xx = Vault.getEconomy().getBalance(name);
-            Vault.getEconomy().withdrawPlayer(name, xx);
-
-        }
-
+        this(n, auth, notif, null, "BCC", save);
     }
 
     public Account(String n, ArrayList<String> auth, boolean notif){
@@ -42,19 +37,31 @@ public class Account {
         this(n, new ArrayList<String>(), false, true);
     }
 
-    public Account(String name, ArrayList<String> auth, Boolean notif, String color, boolean b) {
-        this(name, auth, notif, b);
+    //end section
+    public Account(String name, ArrayList<String> auth, Boolean notif, String color, String bankName, boolean save) {
+        this.name = "_bank_"+name;
+        surname = name;
+        authorizedPlayer = auth;
+        this.notif = notif;
         this.color = color;
+        this.bankName = bankName;
+        if(save) {
+            this.save();
+            Vault.getEconomy().createPlayerAccount(name);
+            double xx = Vault.getEconomy().getBalance(name);
+            Vault.getEconomy().withdrawPlayer(name, xx);
+        }
     }
 
     public static Account fetch(String name){
         BCC plugin = BCC.getInstance();
-        ArrayList<String> auth = (ArrayList<String>) plugin.getStorage().get(name+".owners", null);
-        Boolean notif = (Boolean) plugin.getStorage().get(name+".notifications", null);
-        String color = (String) plugin.getStorage().get(name+".color", null);
+        ArrayList<String> auth = (ArrayList<String>) plugin.getStorage(Entities.ACCOUNT).get(name+".owners", null);
+        Boolean notif = (Boolean) plugin.getStorage(Entities.ACCOUNT).get(name+".notifications", null);
+        String color = (String) plugin.getStorage(Entities.ACCOUNT).get(name+".color", null);
+        String bankName = (String) plugin.getStorage(Entities.ACCOUNT).get(name+".bank", null);
         if(auth == null || notif == null)
             return null;
-        return new Account(name, auth, notif, color, false);
+        return new Account(name, auth, notif, color, bankName, false);
     }
 
     public boolean addOwner(String auth){
@@ -62,6 +69,7 @@ public class Account {
         this.save();
         return  true;
     }
+
 
     public boolean pay(double amount, String player) {
         return this.pay(amount, player, "");
@@ -83,6 +91,7 @@ public class Account {
             message.put("motif", communication);
             sendNotification(Utils.formatMessage("notiftextIn", message));
         }
+        Bank.fetch(this.bankName).clientMoney(amount);
         Utils.logTransaction(player, this.surname, "pay", Double.toString(amount), communication);
         return true;
     }
@@ -107,6 +116,7 @@ public class Account {
                 message.put("motif", communication);
                 sendNotification(Utils.formatMessage("notiftextOut", message));
             }
+            Bank.fetch(this.bankName).clientMoney(amount * -1);
             Utils.logTransaction(player, this.surname, "withdraw", Double.toString(amount), communication);
             return true;
         }
@@ -126,10 +136,11 @@ public class Account {
 
     public void save(){
         BCC plugin = BCC.getInstance();
-        plugin.getStorage().set(this.surname+".owners", this.authorizedPlayer);
-        plugin.getStorage().set(this.surname+".notifications", this.notif);
-        plugin.getStorage().set(this.surname+".color", this.color);
-        plugin.saveStorage();
+        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".owners", this.authorizedPlayer);
+        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".notifications", this.notif);
+        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".color", this.color);
+        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".bank", this.bankName);
+        plugin.saveStorage(Entities.ACCOUNT);
     }
 
     public String getName() {
@@ -187,5 +198,14 @@ public class Account {
     public void delOwner(String s) {
         this.authorizedPlayer.remove(s);
         this.save();
+    }
+
+    public void setBank(String s){
+        this.bankName = s;
+        this.save();
+    }
+
+    public Bank getBank() {
+        return Bank.fetch(this.bankName);
     }
 }

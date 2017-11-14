@@ -1,24 +1,29 @@
-package be.charybde.bank.command;
+package be.charybde.bank.command.account;
 
-import be.charybde.bank.Account;
+import be.charybde.bank.command.commandUtil;
+import be.charybde.bank.entities.Account;
 import be.charybde.bank.Utils;
 import be.charybde.bank.Vault;
+import be.charybde.bank.command.ICommandHandler;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by laurent on 09.05.17.
+ * Created by laurent on 19.04.17.
  */
-public class SetColorCommand implements ICommandHandler {
-    private static ICommandHandler instance = new SetColorCommand();
-    private SetColorCommand(){}
+public class RemoveOwnerCommand implements ICommandHandler {
+    private static ICommandHandler instance = new RemoveOwnerCommand();
+
+    private RemoveOwnerCommand() {
+
+    }
 
     public static ICommandHandler getInstance() {
         return instance;
     }
-
 
     @Override
     public boolean handle(String command, String[] args, Player player) {
@@ -35,16 +40,13 @@ public class SetColorCommand implements ICommandHandler {
             return true;
         }
 
-
-        if(account.setColor(args[1])){
+        for(int i = 1; i < args.length; ++i) {
+            account.delOwner(args[i].toLowerCase());
             Map<String, String> message = new HashMap<>();
             message.put("account", account.getDisplayName());
-            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("color", message), player);
+            message.put("person", args[i]);
+            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("ownerless", message), player);
         }
-        else {
-            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("colornotfound"), player);
-        }
-
 
         return true;
     }

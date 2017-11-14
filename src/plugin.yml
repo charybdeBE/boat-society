@@ -1,5 +1,5 @@
 name: BCC
-version: 0.3.1
+version: 0.4.0
 author: CharybdeBE
 main: be.charybde.bank.BCC
 softdepend: [Vault]
@@ -7,6 +7,9 @@ commands:
       bank:
                description: Gestion of bank accounts
                usage:  Utilisation  bank [pay|withdraw|list] COMPTE MONTANT MESSAGE
+      cbank:
+                description: Gestion of commercial banks
+                usage: Utilisation cbank [info|retrait] COMPTE RAISON
 permissions:
     bcc.create:
         description: Allow user to create accounts
