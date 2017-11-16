@@ -42,6 +42,9 @@ public class BankInfoCommand implements ICommandHandler {
         for(Account it : clients){
             clientList += it.getDisplayName() + ", ";
         }
+        if(clientList.equals("")){
+            clientList = " [Aucun client]";
+        }
 
         Map<String, String> message = new HashMap<>();
         message.put("name", subject.getName());

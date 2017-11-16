@@ -122,7 +122,13 @@ public class Bank implements Entity {
         ArrayList<Account> result = new ArrayList<>();
         Map<String, Object> g =  BCC.getInstance().getStorage(Entities.ACCOUNT).getValues(false);
         for(Map.Entry<String, Object> e : g.entrySet()){
-            result.add(Account.fetch(e.getKey()));
+            Account it = Account.fetch(e.getKey());
+            if(it != null){
+                Bank b = it.getBank();
+                if(b != null && b.getName().equals(this.name)){
+                    result.add(it);
+                }
+            }
         }
         return result;
     }
