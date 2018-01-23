@@ -20,9 +20,15 @@ public class Utils {
         String toret = (String) BCC.getInstance().getLang().get(path);
         if(replace != null){
             for(Map.Entry<String, String> ent : replace.entrySet()){
-                String val = ChatColor.WHITE + ent.getValue() + ChatColor.GREEN;
-                toret = toret.replace("\\!"+ent.getKey(), val);
-                toret = toret.replace("!"+ent.getKey(), val);
+                try {
+                    String val = ChatColor.WHITE + ent.getValue() + ChatColor.GREEN;
+                    toret = toret.replace("\\!"+ent.getKey(), val);
+                    toret = toret.replace("!"+ent.getKey(), val);
+                }
+                catch (Exception e){
+                    System.out.println("error in sending message");
+                }
+
             }
         }
         return bcc + toret;

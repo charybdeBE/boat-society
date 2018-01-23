@@ -16,17 +16,17 @@ import java.util.Map;
  */
 public class Account implements Entity {
     private String name;
-    private String surname;
     private String bankName;
     private ArrayList<String> authorizedPlayer;
     private Boolean notif;
     private String color;
+    private double amount;
 
 
 
 //Kept for legacy section
     public Account(String n, ArrayList<String> auth, boolean notif, boolean save){
-        this(n, auth, notif, null, "BCC", save);
+        this(n, auth, notif, null,0, "BCC", save);
     }
 
     public Account(String n, ArrayList<String> auth, boolean notif){
@@ -38,18 +38,15 @@ public class Account implements Entity {
     }
 
     //end section
-    public Account(String name, ArrayList<String> auth, Boolean notif, String color, String bankName, boolean save) {
-        this.name = "_bank_"+name;
-        surname = name;
-        authorizedPlayer = auth;
+    public Account(String name, ArrayList<String> auth, Boolean notif, String color, double amount,  String bankName, boolean save) {
+        this.name = name;
+        this.authorizedPlayer = auth;
         this.notif = notif;
         this.color = color;
         this.bankName = bankName;
+        this.amount = amount;
         if(save) {
             this.save();
-            Vault.getEconomy().createPlayerAccount(name);
-            double xx = Vault.getEconomy().getBalance(name);
-            Vault.getEconomy().withdrawPlayer(name, xx);
         }
     }
 
@@ -59,9 +56,10 @@ public class Account implements Entity {
         Boolean notif = (Boolean) plugin.getStorage(Entities.ACCOUNT).get(name+".notifications", null);
         String color = (String) plugin.getStorage(Entities.ACCOUNT).get(name+".color", null);
         String bankName = (String) plugin.getStorage(Entities.ACCOUNT).get(name+".bank", null);
+        double amount = (double) plugin.getStorage(Entities.ACCOUNT).get(name+".amount", 0);
         if(auth == null || notif == null)
             return null;
-        return new Account(name, auth, notif, color, bankName, false);
+        return new Account(name, auth, notif, color, amount, bankName, false);
     }
 
     public boolean addOwner(String auth){
@@ -78,7 +76,8 @@ public class Account implements Entity {
     public boolean pay(double amount, String player, String communication){
         if(amount < 0.0D || Vault.getEconomy().getBalance(player) < amount)
             return false;
-        Vault.getEconomy().depositPlayer(this.name, amount);
+
+        addMoney(amount);
         Vault.getEconomy().withdrawPlayer(player, amount);
         if(notif){
             Map<String, String> message = new HashMap<>();
@@ -91,8 +90,10 @@ public class Account implements Entity {
             message.put("motif", communication);
             sendNotification(Utils.formatMessage("notiftextIn", message));
         }
-        Bank.fetch(this.bankName).clientMoney(amount);
-        Utils.logTransaction(player, this.surname, "pay", Double.toString(amount), communication);
+        if(Bank.fetch(this.bankName) != null){
+            Bank.fetch(this.bankName).clientMoney(amount);
+        }
+        Utils.logTransaction(player, this.name, "pay", Double.toString(amount), communication);
         return true;
     }
 
@@ -104,7 +105,7 @@ public class Account implements Entity {
     public boolean withdraw(double amount, String player , String communication){
         if(amount > 0.0D && this.getBalance() >= amount){
             Vault.getEconomy().depositPlayer(player, amount);
-            Vault.getEconomy().withdrawPlayer(this.name, amount);
+            addMoney(amount * -1);
             if(notif){
                 Map<String, String> message = new HashMap<>();
                 message.put("account", this.getDisplayName());
@@ -116,8 +117,10 @@ public class Account implements Entity {
                 message.put("motif", communication);
                 sendNotification(Utils.formatMessage("notiftextOut", message));
             }
-            Bank.fetch(this.bankName).clientMoney(amount * -1);
-            Utils.logTransaction(player, this.surname, "withdraw", Double.toString(amount), communication);
+            if(Bank.fetch(this.bankName) != null){
+                Bank.fetch(this.bankName).clientMoney(amount * -1);
+            }
+            Utils.logTransaction(player, this.name, "withdraw", Double.toString(amount), communication);
             return true;
         }
 
@@ -129,22 +132,23 @@ public class Account implements Entity {
     }
 
     public double getBalance(){
-        return Vault.getEconomy().getBalance(this.name);
+        return this.amount;
     }
 
 
 
-    public void save(){
+    public synchronized void save(){
         BCC plugin = BCC.getInstance();
-        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".owners", this.authorizedPlayer);
-        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".notifications", this.notif);
-        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".color", this.color);
-        plugin.getStorage(Entities.ACCOUNT).set(this.surname+".bank", this.bankName);
+        plugin.getStorage(Entities.ACCOUNT).set(this.name+".owners", this.authorizedPlayer);
+        plugin.getStorage(Entities.ACCOUNT).set(this.name+".notifications", this.notif);
+        plugin.getStorage(Entities.ACCOUNT).set(this.name+".color", this.color);
+        plugin.getStorage(Entities.ACCOUNT).set(this.name+".bank", this.bankName);
+        plugin.getStorage(Entities.ACCOUNT).set(this.name+".amount", this.amount);
         plugin.saveStorage(Entities.ACCOUNT);
     }
 
     public String getName() {
-        return this.surname;
+        return this.name;
     }
 
     public void setNotif(boolean what){
@@ -189,10 +193,10 @@ public class Account implements Entity {
 
     public String getDisplayName(){
         if(this.color != null){
-            return ChatColor.getByChar(this.color) + "" + this.surname + ChatColor.GREEN;
+            return ChatColor.getByChar(this.color) + "" + this.name + ChatColor.GREEN;
         }
         else
-            return this.surname;
+            return this.name;
     }
 
     public void delOwner(String s) {
@@ -207,5 +211,10 @@ public class Account implements Entity {
 
     public Bank getBank() {
         return Bank.fetch(this.bankName);
+    }
+
+    private addMoney(double d){
+        this.amount += d;
+        this.save();
     }
 }

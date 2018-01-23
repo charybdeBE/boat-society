@@ -34,13 +34,13 @@ public class WithDrawFromBankCommand implements ICommandHandler {
         }
 
         String reason = "";
-            reason = Utils.formatArray(args, 1);
+        reason = Utils.formatArray(args, 1);
 
-            try{
-                Double.parseDouble(args[0]);
-            }catch (Exception e) {
+        try{
+            Double.parseDouble(args[0]);
+        }catch (Exception e) {
             return  false;
-            }
+        }
 
         boolean result = subject.withdraw(player.getName(), Double.parseDouble(args[0]), reason);
         if(result){
@@ -50,7 +50,7 @@ public class WithDrawFromBankCommand implements ICommandHandler {
             commandUtil.sendToPlayerOrConsole(Utils.formatMessage("bankwithdraw", message), player);
         }
         else {
-            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("notpay"), player);
+            commandUtil.sendToPlayerOrConsole(Utils.formatMessage("bankminimum"), player);
         }
 
         return true;

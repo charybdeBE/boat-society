@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="bank-society:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/bank_society_jar</output-path>
+    <root id="archive" name="bank-society.jar">
+      <element id="module-output" name="bank-society" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/Vault.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/Spigot/Spigot-API/target/spigot-api-1.11-R0.1-SNAPSHOT.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

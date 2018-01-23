@@ -38,6 +38,13 @@ public class WithdrawCommand implements ICommandHandler {
             return true;
         }
 
+        try{
+            Double.parseDouble(args[1]);
+        }catch (Exception e) {
+            return  false;
+        }
+
+
         boolean result = false;
         if(args.length > 2){
             String message = Utils.formatArray(args, 2);
