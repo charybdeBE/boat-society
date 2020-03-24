@@ -1,4 +1,4 @@
-package be.charybde.bank.command;
+package be.charybde.boat.command;
 
 /**
  * Created by laurent on 20.04.17.
@@ -8,7 +8,7 @@ package be.charybde.bank.command;
 // (powered by Fernflower decompiler)
 //
 
-import be.charybde.bank.BCC;
+import be.charybde.boat.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class commandUtil {
-    private static final String RootCommand = "bank";
+    private static final String RootCommand = "g";
 
     private commandUtil() {
     }
@@ -30,7 +30,7 @@ public class commandUtil {
         if(player != null) {
             player.sendMessage(message);
         } else {
-            BCC.log(message, Level.INFO);
+            Main.getInstance().log(message, Level.INFO);
         }
 
     }
@@ -57,7 +57,7 @@ public class commandUtil {
             String pre = first[sub];
             if(rootBuilder.length() == 0) {
                 rootBuilder.append("/");
-                rootBuilder.append("bank");
+                rootBuilder.append("g");
             }
 
             rootBuilder.append(" ");
@@ -97,9 +97,9 @@ public class commandUtil {
     public static String getAllCommands() {
         LinkedList commands = new LinkedList();
         commands.add("pay ACCOUNT ~");
-        commands.add("list~(Gives a list of bank account)");
+        commands.add("list~(Gives a list of boat account)");
         commands.add("ACCOUNT ~(check the account)");
-        return formatAllCommands(commands, "bank");
+        return formatAllCommands(commands, "g");
     }
 
     public static String formatAllCommands(List<String> commands, String rootCommand) {

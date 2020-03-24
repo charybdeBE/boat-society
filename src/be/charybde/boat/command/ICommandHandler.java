@@ -1,4 +1,4 @@
-package be.charybde.bank.command;
+package be.charybde.boat.command;
 
 import org.bukkit.entity.Player;
 

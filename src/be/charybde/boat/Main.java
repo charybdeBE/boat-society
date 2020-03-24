@@ -1,9 +1,8 @@
-package be.charybde.bank;
+package be.charybde.boat;
 
-import be.charybde.bank.command.*;
-import be.charybde.bank.command.account.*;
-import be.charybde.bank.command.bank.*;
-import be.charybde.bank.entities.Entities;
+import be.charybde.boat.command.*;
+import be.charybde.boat.listener.MailBox;
+import be.charybde.boat.listener.SealBook;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,21 +15,19 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.*;
 
-public class BCC extends JavaPlugin {
+//TODO logs ?
+
+public class Main extends JavaPlugin {
     private static final Logger logger = Logger.getLogger("Minecraft");
     private static final Logger transactionlogger = Logger.getLogger("Transactions");
     private static CommandDispatcher commandDispatcher = new CommandDispatcher();
     private File languageF;
     private FileConfiguration language;
-    private Map<Entities, FileConfiguration> storage;
-    private Map<Entities, File> storageF;
-    public static BCC plugin = null;
+    public static Main plugin = null;
 
-    public static BCC getInstance(){
+    public static Main getInstance(){
         return plugin;
     }
 
@@ -42,10 +39,6 @@ public class BCC extends JavaPlugin {
         v.setupEconomy();
         v.setupPermissions();
         setupCommands();
-        this.storage = new HashMap<>();
-        this.storageF = new HashMap<>();
-        createStorage(Entities.ACCOUNT, "account.yml");
-        createStorage(Entities.BANK, "bank.yml");
         setupLang();
 
         try {
@@ -62,7 +55,8 @@ public class BCC extends JavaPlugin {
         }
 
 
-
+        getServer().getPluginManager().registerEvents(new MailBox(), this);
+        getServer().getPluginManager().registerEvents(new SealBook(), this);
         log("Enabled", Level.INFO);
 
     }
@@ -77,7 +71,7 @@ public class BCC extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String args[]) {
         String commandName = cmd.getName().toLowerCase();
-        if(!commandName.equalsIgnoreCase("bank"))
+        if(!commandName.equalsIgnoreCase("b"))
             return true;
 
         if(args.length == 0)
@@ -87,39 +81,14 @@ public class BCC extends JavaPlugin {
     }
 
     private void setupCommands() {
-        commandDispatcher.registerHandler("create", CreateCommand.getInstance());
-        commandDispatcher.registerHandler("pay", PayCommand.getInstance());
-        commandDispatcher.registerHandler("list", ListCommand.getInstance());
-        commandDispatcher.registerHandler("withdraw", WithdrawCommand.getInstance());
-        commandDispatcher.registerHandler("notification", NotifSwitchCommand.getInstance());
-        commandDispatcher.registerHandler("addowner", AddOwnerCommand.getInstance());
-        commandDispatcher.registerHandler("removeowner", RemoveOwnerCommand.getInstance());
-        commandDispatcher.registerHandler("color", SetColorCommand.getInstance());
-        commandDispatcher.registerHandler("remove", DeleteAccountCommand.getInstance());
-
-
-        //French command
-        commandDispatcher.registerHandler("depot", PayCommand.getInstance());
-        commandDispatcher.registerHandler("liste", ListCommand.getInstance());
-        commandDispatcher.registerHandler("retrait", WithdrawCommand.getInstance());
-        commandDispatcher.registerHandler("plusutilisateur", AddOwnerCommand.getInstance());
-        commandDispatcher.registerHandler("moinsutilisateur", RemoveOwnerCommand.getInstance());
-        commandDispatcher.registerHandler("couleur", SetColorCommand.getInstance());
-
-
-        //Commercial Bank command
-        commandDispatcher.registerHandler("ccreate", CreateBankCommand.getInstance());
-        commandDispatcher.registerHandler("cinfo", BankInfoCommand.getInstance());
-        commandDispatcher.registerHandler("ctransfert", TransferAccountCommand.getInstance());
-        commandDispatcher.registerHandler("cretrait", WithDrawFromBankCommand.getInstance());
-        commandDispatcher.registerHandler("cdepot", PayToBankCommand.getInstance());
-
+//        commandDispatcher.registerHandler("create", CreateCommand.getInstance());
+//        commandDispatcher.registerHandler("flush", FlushCommand.getInstance());
     }
 
 
     public static void log(String message, Level level) {
         if(!message.isEmpty())
-            logger.log(level,("[BCC] " + message));
+            logger.log(level,("[BOAT] " + message));
     }
 
     private void createDir() {
@@ -130,36 +99,6 @@ public class BCC extends JavaPlugin {
         }
     }
 
-
-    private void createStorage(Entities ent, String filename) {
-        try {
-            if (!getDataFolder().exists()) {
-                getDataFolder().mkdirs();
-            }
-            storageF.put(ent, new File(getDataFolder(), filename));
-            if (!storageF.get(ent).exists()) {
-                log(filename +" not found, creating!", Level.INFO);
-                storageF.get(ent).getParentFile().mkdirs();
-                saveResource(filename, false);
-            } else {
-                log(filename +"  found, loading!", Level.INFO);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        storage.put(ent,  new YamlConfiguration());
-        try {
-            storage.get(ent).load(storageF.get(ent));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public FileConfiguration getStorage(Entities e){
-        return storage.get(e);
-    }
 
     public FileConfiguration getLang(){
         return language;
@@ -188,15 +127,6 @@ public class BCC extends JavaPlugin {
             e.printStackTrace();
         }
     }
-
-    public void saveStorage(Entities ent) {
-        try {
-            storage.get(ent).save(storageF.get(ent));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private class TransferFormatter extends Formatter {
         private final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");

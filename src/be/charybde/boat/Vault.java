@@ -1,4 +1,4 @@
-package be.charybde.bank;
+package be.charybde.boat;
 //
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)

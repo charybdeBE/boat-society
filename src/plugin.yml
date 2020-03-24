@@ -1,22 +1,6 @@
-name: BCC
-version: 0.4.2
+name: Boat-Society
+version: 0.5
 author: CharybdeBE
-main: be.charybde.bank.BCC
-softdepend: [Vault]
-commands:
-      bank:
-               description: Gestion of bank accounts
-               usage:  Utilisation  bank [pay|withdraw|list] COMPTE MONTANT MESSAGE
-      cbank:
-                description: Gestion of commercial banks
-                usage: Utilisation cbank [info|retrait] COMPTE RAISON
-permissions:
-    bcc.create:
-        description: Allow user to create accounts
-        default: false
-    bcc.list:
-        description: Allow user to see all accounts
-        default: false
-    bcc.admin:
-        description: Allow user to do everything on all account
-        default: false
+main: be.charybde.boat.Main
+softdepend: [Vault, BCC]
+api-version: 1.14

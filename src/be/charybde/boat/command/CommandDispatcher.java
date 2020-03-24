@@ -1,11 +1,10 @@
-package be.charybde.bank.command;
+package be.charybde.boat.command;
 
 //
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
 
-import be.charybde.bank.command.ICommandHandler;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;

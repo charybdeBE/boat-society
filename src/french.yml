@@ -1,25 +1,6 @@
-create: Le compte !account a ete cree.
-pay: \!money Tr a ete transfere sur le compte !account.
-notpay: Pas assez d argent dans votre poche.
-withdraw: Vous avez retire !money Tr du compte !account.
-notwithdraw: Le compte !account ne contient pas assez d argent.
-balance: (!bank) !account !money Tr
-notallowed: Vous n etes pas autorise a utiliser ce compte.
-notallowed2: Vous n etes pas autorise a executer cette commande.
-list: Liste des comptes
-owner: \!person a ete ajoute au compte !account
-ownerless:  \!person a ete retire du compte !account
-notifOn: Notifications activee pour le compte !account
-notifOff: Notifications desactive pour le compte !account
-notiftextIn: \!money Tr ont ete verse sur le compte !account par !person !motif
-notiftextOut: \!money Tr ont ete retire du compte !account par !person !motif
-alreadyexist: Erreur le nom que vous avez choisis existe deja
-notfound: Ce compte n existe pas.
-color: Couleur modifiee pour le compte !account
-colornotfound: Cette couleur n existe pas.
-delete: Le compte !account a ete supprime, il contenait !money Tr
-bankinfo: La banque !name possede une encaisse de !money Tr. Le total des depots est de !depots Tr. La capacite de retrait est de !retrait Tr. Les comptes affiliés sont !client
-transfert: Compte !account transfere de !bank1 a !bank2
-bankwithdraw: \!money a ete retire de l encaisse de !bank
-bankpay: \!money a ete ajoute a l encaisse de !bank
-bankminimum: L encaisse doit valoir au minimum 50% des depots
+noFuel: Pas assez de carburant.
+noIn: Vous ne faites pas partie de l'équipage.
+noLicence: Ce bateau n a pas de permis.
+far: Vous etes trop loin du bateau.
+noMoney: Vous etes pauvre.
+arrival: Bienvenue a la Station !ss , départ dans 5 secondes éloignez vous pour ne pas partir.
