@@ -1,8 +1,11 @@
 package be.charybde.boat.listener;
 
 import be.charybde.boat.Utils;
+import be.charybde.boat.entities.AbstractTransport;
 import be.charybde.boat.entities.Boat;
+import be.charybde.boat.entities.Chariot;
 import be.charybde.boat.entities.Metro;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -16,7 +19,7 @@ import java.util.HashMap;
 
 public class MailBox implements Listener {
 
-    public HashMap<String, Boat> port; //Contains all the boat
+    public HashMap<String, AbstractTransport> port; //Contains all the boat
     private HashMap<String, Metro> lines;
     public HashMap<Inventory, String> configs;
     private static MailBox instance;
@@ -40,20 +43,13 @@ public class MailBox implements Listener {
                 Sign sign = (Sign) b.getState();
                 String name = sign.getLine(1);
                 if(e.getPlayer().getInventory().getItemInMainHand().getType() != Material.GOLDEN_AXE) {
-                    if (sign.getLine(0).equalsIgnoreCase("[Boat]")) { //TODO functions
-                        Boat boat = port.get(name);
-                        if (boat == null) {
-                            Inventory i = Utils.deserializeInventory(name);
-                            if (i != null) {
-                                boat = new Boat(i, name);
-                            } else {
-                                boat = new Boat(e.getClickedBlock().getLocation(), name);
-                            }
-                            port.put(name, boat);
-                            configs.put(boat.getGUI(), name);
+                    if (isPrivateTransport(sign)) { //TODO functions
+                        AbstractTransport abstractTransport = port.get(name);
+                        if (abstractTransport == null) {
+                            abstractTransport = getEntity(sign, name, e.getClickedBlock().getLocation());
                         }
-                        if (boat.isInEquipage(e.getPlayer())) {
-                            e.getPlayer().openInventory(boat.getGUI());
+                        if (abstractTransport.isInEquipage(e.getPlayer())) {
+                            e.getPlayer().openInventory(abstractTransport.getGUI());
                         } else {
                             e.getPlayer().sendMessage(Utils.formatMessage("noIn"));
                         }
@@ -81,21 +77,21 @@ public class MailBox implements Listener {
             Block b = e.getClickedBlock();
             if (Utils.isWallSign(b.getType())) { //Todo check what is behind
                 Sign sign = (Sign) b.getState();
-                if (sign.getLine(0).equalsIgnoreCase("[Boat]")) { //TODO functions
+                if (isPrivateTransport(sign)) {
                     String name = sign.getLine(1);
 
-                    double price = Double.parseDouble(sign.getLine(3).replaceAll("[A-Za-z ]", ""));
-                    Boat boat = port.get(name);
-                    if (boat == null) {
-                        Inventory i = Utils.deserializeInventory(name);
-                        if (i != null) {
-                            boat = new Boat(i, name);
-                            port.put(name, boat);
-                            configs.put(boat.getGUI(), name);
-                        }
+                    double price;
+                    try {
+                        price = Double.parseDouble(sign.getLine(3).replaceAll("[A-Za-z ]", ""));
+                    } catch (Exception a) {
+                        price = 0.0;
                     }
-                    if (boat != null) {
-                        boat.run(e.getPlayer(), price);
+                    AbstractTransport abstractTransport = port.get(name);
+                    if (abstractTransport == null) {
+                        abstractTransport = getEntity(sign, name);
+                    }
+                    if (abstractTransport != null) {
+                        abstractTransport.run(e.getPlayer(), price);
                     }
                 } else if (sign.getLine(0).equalsIgnoreCase("[Metro]")) {
                     String name = sign.getLine(1);
@@ -123,6 +119,44 @@ public class MailBox implements Listener {
         if (configs.containsKey(event.getInventory())) { //TODO Handle errors //TODO handle signed
             Utils.serializeInventory(configs.get(event.getInventory()), event.getInventory());
         }
+    }
+
+
+    private boolean isPrivateTransport(Sign sign) {
+        return sign.getLine(0).equalsIgnoreCase("[Boat]") || sign.getLine(0).equalsIgnoreCase("[Chariot]");
+    }
+
+    //TODO move in factory ?
+    private AbstractTransport getEntity(Sign s, String name) {
+        return getEntity(s, name, null);
+    }
+
+    private AbstractTransport getEntity(Sign s, String name, Location location) {
+        Inventory i = Utils.deserializeInventory(name);
+        AbstractTransport abstractTransport = null;
+        if(i == null && location == null)
+            return null;
+        switch (s.getLine(0).toLowerCase()) {
+            case "[boat]":
+                if(i == null) {
+                    abstractTransport = new Boat(location, name);
+                } else {
+                    abstractTransport = new Boat(i, name);
+                }
+                break;
+            case "[chariot]":
+                if(i == null) {
+                    abstractTransport = new Chariot(location, name);
+                } else {
+                    abstractTransport = new Chariot(i, name);
+                }
+                break;
+        }
+        if(abstractTransport != null){
+            port.put(name, abstractTransport);
+            configs.put(abstractTransport.getGUI(), name);
+        }
+        return abstractTransport;
     }
 
 }

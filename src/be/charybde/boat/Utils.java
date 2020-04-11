@@ -1,23 +1,25 @@
 package be.charybde.boat;
 
-import com.mysql.fabric.xmlrpc.base.Array;
+import com.mojang.datafixers.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -165,5 +167,32 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static BoundingBox getBoundingBoxFromLocations(Location l1, Location l2){
+        return getBoundingBoxFromLocations(new Pair<>(l1, l2));
+    }
+    public static BoundingBox getBoundingBoxFromLocations(Pair<Location, Location> locations) {
+        return new BoundingBox(
+                locations.getFirst().getX(),
+                locations.getFirst().getY(),
+                locations.getFirst().getZ(),
+                locations.getSecond().getX(),
+                locations.getSecond().getY(),
+                locations.getSecond().getZ()
+        );
+    }
+
+    public static boolean isInBox(Player p, BoundingBox box){
+        List<Entity> list = (List<Entity>) p.getLocation().getWorld().getNearbyEntities(box);
+        for(Entity entity : list){
+            if(entity.getType() == EntityType.PLAYER){
+                Player match = (Player) entity;
+                if(match.getName().equals(p.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

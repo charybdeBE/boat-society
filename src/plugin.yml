@@ -1,5 +1,5 @@
 name: Boat-Society
-version: 0.5
+version: 0.7.0
 author: CharybdeBE
 main: be.charybde.boat.Main
 softdepend: [Vault, BCC]
